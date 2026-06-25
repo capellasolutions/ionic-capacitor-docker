@@ -8,6 +8,13 @@
 # is kept for older pnpm/tooling.
 nodeLinker: hoisted
 
+# verifyDepsBeforeRun: false disables pnpm 11's pre-run dependency check. The Dockerfile installs dependencies once in a
+# dedicated, cached layer (pnpm install --frozen-lockfile); without this, every later `pnpm run` / `pnpm exec` re-checks
+# node_modules, decides it is stale, and launches an implicit reinstall that tries to purge node_modules — which aborts
+# in Docker because there is no TTY to confirm (ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY). We control installation
+# explicitly, so the build script should just use what is already installed.
+verifyDepsBeforeRun: false
+
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
