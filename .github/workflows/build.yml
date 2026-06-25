@@ -30,7 +30,7 @@ jobs:
         working-directory: example-app
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           # Match the toolchain image's `pnpm@latest`; the action requires an explicit
           # version (or a packageManager field, which we avoid so pnpm doesn't try to
