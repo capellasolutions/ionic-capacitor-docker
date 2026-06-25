@@ -31,6 +31,11 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v4
+        with:
+          # Match the toolchain image's `pnpm@latest`; the action requires an explicit
+          # version (or a packageManager field, which we avoid so pnpm doesn't try to
+          # self-switch versions during the Docker build).
+          version: latest
       - uses: actions/setup-node@v6
         with:
           node-version: 24
