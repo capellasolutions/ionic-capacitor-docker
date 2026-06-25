@@ -3,6 +3,13 @@
   color: var(--ion-color-medium);
 }
 
+// At-a-glance "which flavour am I running" marker in the header. The About tab carries the full live runtime details.
+.flavor-badge {
+  vertical-align: middle;
+  margin-left: 0.4rem;
+  font-weight: 600;
+}
+
 .stats {
   display: flex;
   gap: 0.5rem;

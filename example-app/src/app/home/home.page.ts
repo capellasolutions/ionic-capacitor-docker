@@ -49,7 +49,7 @@ export class HomePage {
   readonly todos = signal<Todo[]>([
     { id: 1, title: 'Scaffold on Angular 22', done: true },
     { id: 2, title: 'Wire Ionic v9 (zoneless)', done: true },
-    { id: 3, title: 'Ship the Cordova build', done: false },
+    { id: 3, title: 'Ship the Capacitor build', done: false },
   ]);
 
   readonly remaining = computed(() => this.todos().filter((todo) => !todo.done).length);

@@ -5,16 +5,35 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
+  <ion-chip color="primary" class="flavor" data-testid="flavor">
+    <ion-icon name="flash" aria-hidden="true"></ion-icon>
+    <ion-label>Capacitor edition</ion-label>
+  </ion-chip>
+
   <ion-text>
-    <h2>ionic-cordova-docker</h2>
+    <h2>ionic-capacitor-docker</h2>
     <p>
-      A minimal Ionic + Cordova app that doubles as a smoke test for the Docker
+      A minimal Ionic + Capacitor app that doubles as a smoke test for the Docker
       build template. It runs fully zoneless on Angular 22.
     </p>
   </ion-text>
 
   <ion-list>
     @for (item of stack; track item.label) {
+      <ion-item>
+        <ion-label>{{ item.label }}</ion-label>
+        <ion-note slot="end">{{ item.value }}</ion-note>
+      </ion-item>
+    }
+  </ion-list>
+
+  <ion-text>
+    <h3>Runtime (live)</h3>
+    <p>Reported by <code>&#64;capacitor/device</code> — android/ios on a device, web in a browser.</p>
+  </ion-text>
+
+  <ion-list>
+    @for (item of runtime(); track item.label) {
       <ion-item>
         <ion-label>{{ item.label }}</ion-label>
         <ion-note slot="end">{{ item.value }}</ion-note>
