@@ -26,6 +26,13 @@ Dockerfile.*    text eol=lf
 *.properties text eol=lf
 .npmrc       text eol=lf
 
+# Docs and structured config — keep LF so Windows checkouts don't add CRLF. This silences the noisy
+# "LF will be replaced by CRLF the next time Git touches it" warning (e.g. for pnpm-workspace.yaml and README.md) and
+# keeps diffs clean across platforms.
+*.md   text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+
 # --- Force CRLF for Windows-only scripts ---
 *.bat text eol=crlf
 *.cmd text eol=crlf
