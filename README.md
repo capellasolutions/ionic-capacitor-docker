@@ -52,7 +52,7 @@ Capacitor replaces Cordova's `config.xml` with `capacitor.config.ts`. Because th
 
 ```mermaid
 flowchart LR
-    A["Your Ionic app<br/>(Angular 22 + Ionic v9)"]:::app --> B
+    A["Your Ionic app<br/>(Angular 22 + Ionic v9)"]:::app
 
     subgraph IMG["app-builder.Dockerfile · build once, reuse"]
         B["Toolchain image<br/>Ubuntu + JDK + Android SDK + Node"]:::img
@@ -62,9 +62,12 @@ flowchart LR
         C["ng build → www/"]:::step --> D["cap add + cap sync"]:::step --> E["Gradle / CocoaPods"]:::step
     end
 
-    B --> C
-    E --> F["📦 Signed .aab / .apk"]:::out
-    E --> G["🍏 iOS Xcode project<br/>(finish on macOS)"]:::out
+    F["Signed .aab / .apk"]:::out
+    G["iOS Xcode project<br/>(finish on macOS)"]:::out
+
+    A --> B --> C
+    E --> F
+    E --> G
 
     classDef app fill:#119EFF,stroke:#0b6fb3,color:#fff
     classDef img fill:#2496ED,stroke:#1a6cb0,color:#fff
