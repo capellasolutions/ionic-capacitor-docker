@@ -123,10 +123,10 @@ if [ "$platform" = "ios" ] || [ "$platform" = "all" ]; then
     --entrypoint cp app-build -r ./output/ios /app/mount
   # iOS can only be *prepared* on Linux (cap sync already ran pod install in the image); open
   # build-output/ios/App/App.xcworkspace and finish the build on macOS. Re-run 'pod install' there to refresh Pods for
-  # your local CocoaPods; skip it cleanly elsewhere.
+  # your local CocoaPods; skip it cleanly elsewhere. The skip below is informational, not an error.
   if command -v pod >/dev/null 2>&1; then
     cd "$cur_dir"/build-output/ios/App && pod repo update && pod install
   else
-    echo "Skipping 'pod install' (CocoaPods not found — run it on macOS)."
+    echo "iOS project already prepared inside Docker (cap sync ran pod install there). Skipping the host 'pod install' (no CocoaPods here; it is only needed to refresh Pods on macOS)."
   fi
 fi
