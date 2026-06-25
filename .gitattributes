@@ -21,8 +21,8 @@ Dockerfile.*    text eol=lf
 .profile     text eol=lf
 .editorconfig text eol=lf
 *.conf       text eol=lf
-# keystore.properties is sourced by build-capacitor.sh inside the Linux image; CRLF would
-# append \r to the signing passwords and break the release signing. .npmrc is read by pnpm.
+# keystore.properties is sourced by build-capacitor.sh inside the Linux image; CRLF would append \r to the signing
+# passwords and break the release signing. .npmrc is read by pnpm.
 *.properties text eol=lf
 .npmrc       text eol=lf
 

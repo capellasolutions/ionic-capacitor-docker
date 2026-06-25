@@ -121,9 +121,9 @@ if [ "$platform" = "ios" ] || [ "$platform" = "all" ]; then
   echo "Copying generated iOS build to build-output/ios"
   docker run --user root:root -v "$cur_dir"/build-output:/app/mount:Z --rm \
     --entrypoint cp app-build -r ./output/ios /app/mount
-  # iOS can only be *prepared* on Linux (cap sync already ran pod install in the image);
-  # open build-output/ios/App/App.xcworkspace and finish the build on macOS. Re-run
-  # 'pod install' there to refresh Pods for your local CocoaPods; skip it cleanly elsewhere.
+  # iOS can only be *prepared* on Linux (cap sync already ran pod install in the image); open
+  # build-output/ios/App/App.xcworkspace and finish the build on macOS. Re-run 'pod install' there to refresh Pods for
+  # your local CocoaPods; skip it cleanly elsewhere.
   if command -v pod >/dev/null 2>&1; then
     cd "$cur_dir"/build-output/ios/App && pod repo update && pod install
   else

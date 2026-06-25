@@ -8,10 +8,9 @@ LABEL org.opencontainers.image.description="Toolchain image for building Ionic/C
 # -----------------------------------------------------------------------------
 ENV DEBIAN_FRONTEND=noninteractive
 
-# A Capacitor android/ project ships its own Gradle wrapper, so the build runs ./gradlew
-# and the wrapper downloads the version pinned in the generated project. We still install a
-# system Gradle below (its distribution cache warms the wrapper download) and pin the
-# version here so it can move via --build-arg.
+# A Capacitor android/ project ships its own Gradle wrapper, so the build runs ./gradlew and the wrapper downloads the
+# version pinned in the generated project. We still install a system Gradle below (its distribution cache warms the
+# wrapper download) and pin the version here so it can move via --build-arg.
 ARG GRADLE_VERSION
 ENV GRADLE_VERSION=${GRADLE_VERSION:-8.14.5}
 
@@ -42,9 +41,8 @@ RUN \
 # -----------------------------------------------------------------------------
 # Install Java
 #
-# Capacitor 8's Android template uses the Android Gradle Plugin 8.x, which runs on JDK 21
-# (with Gradle 8.x) — the newest LTS that works here. JDK 25 would need AGP 9 / Gradle 9.1+.
-# Kept as an ARG so it can move.
+# Capacitor 8's Android template uses the Android Gradle Plugin 8.x, which runs on JDK 21 (with Gradle 8.x) — the newest
+# LTS that works here. JDK 25 would need AGP 9 / Gradle 9.1+. Kept as an ARG so it can move.
 # -----------------------------------------------------------------------------
 
 ARG JAVA_VERSION
@@ -76,10 +74,9 @@ RUN \
           lib32ncurses6 \
           lib32z1
 
-# Check https://capacitorjs.com/docs/android first, and keep @capacitor/android in
-# package.json current. The generated android/ project's compileSdk/targetSdk should match
-# ANDROID_PLATFORMS_VERSION. Capacitor 8 compiles against SDK Platform 36, but its Android
-# Gradle Plugin pins Build Tools 35.0.0 (not 36) — that's the version to install, otherwise
+# Check https://capacitorjs.com/docs/android first, and keep @capacitor/android in package.json current. The generated
+# android/ project's compileSdk/targetSdk should match ANDROID_PLATFORMS_VERSION. Capacitor 8 compiles against SDK
+# Platform 36, but its Android Gradle Plugin pins Build Tools 35.0.0 (not 36) — that's the version to install, otherwise
 # Gradle tries to auto-download it and fails on the read-only SDK dir.
 ARG ANDROID_PLATFORMS_VERSION
 ENV ANDROID_PLATFORMS_VERSION=${ANDROID_PLATFORMS_VERSION:-36}
@@ -102,17 +99,16 @@ RUN  yes | sdkmanager --update && yes | sdkmanager --licenses && \
   sdkmanager "platform-tools" && \
   sdkmanager "platforms;android-${ANDROID_PLATFORMS_VERSION}" && \
   sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION}" && \
-  # Make the whole SDK world-writable so the non-root build user's Gradle can auto-install
-  # any extra component a future AGP asks for (otherwise it fails on the read-only dir).
+  # Make the whole SDK world-writable so the non-root build user's Gradle can auto-install any extra component a future
+  # AGP asks for (otherwise it fails on the read-only dir).
   chmod -R a+rwX ${ANDROID_SDK_ROOT}
 
 # -----------------------------------------------------------------------------
 # Install Gradle
 #
-# The generated Capacitor android/ project runs through its own ./gradlew wrapper, so a
-# system Gradle is not strictly required. We still install the official distribution (and
-# put it on PATH) so its cache warms the wrapper download and so `gradle` is available for
-# any ad-hoc use. Ubuntu's apt Gradle is far too old for the Android Gradle Plugin.
+# The generated Capacitor android/ project runs through its own ./gradlew wrapper, so a system Gradle is not strictly
+# required. We still install the official distribution (and put it on PATH) so its cache warms the wrapper download and
+# so `gradle` is available for any ad-hoc use. Ubuntu's apt Gradle is far too old for the Android Gradle Plugin.
 # -----------------------------------------------------------------------------
 RUN curl -SLo /tmp/gradle.zip https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip && \
   unzip -q /tmp/gradle.zip -d /opt && \
@@ -141,12 +137,11 @@ RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
     node --version && \
     npm --version
 
-# Yarn and pnpm are installed on demand with npm (which always ships with Node). We avoid
-# Corepack on purpose: it is being unbundled from Node (25+), so relying on it would break
-# the moment NODE_VERSION moves forward. Only the SELECTED manager is installed — npm builds
-# (the default) add nothing extra, keeping the image smaller. Pick one per build via
-# PACKAGE_MANAGER. This RUN executes as root, so the global install lands on the shared PATH
-# and stays usable by the non-root build user created later.
+# Yarn and pnpm are installed on demand with npm (which always ships with Node). We avoid Corepack on purpose: it is
+# being unbundled from Node (25+), so relying on it would break the moment NODE_VERSION moves forward. Only the SELECTED
+# manager is installed — npm builds (the default) add nothing extra, keeping the image smaller. Pick one per build via
+# PACKAGE_MANAGER. This RUN executes as root, so the global install lands on the shared PATH and stays usable by the
+# non-root build user created later.
 ARG YARN_VERSION
 ENV YARN_VERSION=${YARN_VERSION:-stable}
 
@@ -214,9 +209,9 @@ USER ${USER}
 ENV NPM_CONFIG_PREFIX=/home/${USER}/.npm-global
 ENV PATH="/home/${USER}/.npm-global/bin:${PATH}"
 
-# Give Gradle an explicit, build-user-owned home so ./gradlew can cache the wrapper
-# distribution and dependencies (defaults to ~/.gradle, which is fine here, but pinning it
-# documents the location and keeps it writable for the non-root user).
+# Give Gradle an explicit, build-user-owned home so ./gradlew can cache the wrapper distribution and dependencies
+# (defaults to ~/.gradle, which is fine here, but pinning it documents the location and keeps it writable for the
+# non-root user).
 ENV GRADLE_USER_HOME=/home/${USER}/.gradle
 
 # -----------------------------------------------------------------------------
@@ -226,11 +221,10 @@ ENV GRADLE_USER_HOME=/home/${USER}/.gradle
 ARG IONIC_CLI_VERSION
 ENV IONIC_CLI_VERSION=${IONIC_CLI_VERSION:-7.2.1}
 
-# Capacitor's CLI (@capacitor/cli) is a project devDependency, run via `npx cap` /
-# `pnpm exec cap`, so nothing Capacitor-specific is installed globally. We keep the Angular
-# CLI for `ng`, and the Ionic CLI optionally (its Capacitor integration lives in
-# ionic.config.json). Installed with npm because these globals are just executables on PATH;
-# PACKAGE_MANAGER only selects how the *app's* deps are installed (in the app Dockerfile).
+# Capacitor's CLI (@capacitor/cli) is a project devDependency, run via `npx cap` / `pnpm exec cap`, so nothing
+# Capacitor-specific is installed globally. We keep the Angular CLI for `ng`, and the Ionic CLI optionally (its
+# Capacitor integration lives in ionic.config.json). Installed with npm because these globals are just executables on
+# PATH; PACKAGE_MANAGER only selects how the *app's* deps are installed (in the app Dockerfile).
 RUN npm install -g @angular/cli && \
     if [ -n "${IONIC_CLI_VERSION}" ]; then npm install -g @ionic/cli@"${IONIC_CLI_VERSION}"; fi && \
     npm cache clean --force
