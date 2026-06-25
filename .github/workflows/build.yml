@@ -1,0 +1,64 @@
+name: build
+
+on:
+  push:
+    branches: [master, main, "claude/**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  # The root Dockerfile / app-builder.Dockerfile / scripts/build-capacitor.sh are the source
+  # of truth; example-app carries identical copies so the demo can be cloned and built
+  # standalone. Fail fast if they ever drift apart. (build-mobile.sh is intentionally
+  # different — its default version — and excluded.)
+  drift-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: example-app template files must match the canonical root files
+        run: |
+          diff -u Dockerfile example-app/Dockerfile
+          diff -u app-builder.Dockerfile example-app/app-builder.Dockerfile
+          diff -u scripts/build-capacitor.sh example-app/scripts/build-capacitor.sh
+
+  # Lint, build and unit-test the demo app (fast, catches Angular/Ionic breakage). The demo
+  # defaults to pnpm, so CI exercises the pnpm path too.
+  app-checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: example-app
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: example-app/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
+      - run: pnpm run build --configuration=production
+      - run: pnpm test --watch=false
+
+  # End-to-end proof of the Docker pipeline: build the toolchain image (pnpm), then build the
+  # demo Android app on top of it. Heavy (downloads the Android SDK and runs Gradle).
+  docker-image:
+    runs-on: ubuntu-latest
+    needs: drift-guard
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the toolchain base image
+        run: docker build . -f ./app-builder.Dockerfile --build-arg PACKAGE_MANAGER=pnpm -t app-builder
+      - name: Build the demo app (Android) end-to-end
+        working-directory: example-app
+        run: |
+          docker build . \
+            --build-arg ENV_NAME=prod \
+            --build-arg PACKAGE_ID=com.example.app \
+            --build-arg PACKAGE_MANAGER=pnpm \
+            --build-arg PLATFORM=android \
+            --build-arg VERSION=0.0.1 \
+            -f ./Dockerfile \
+            -t app-build

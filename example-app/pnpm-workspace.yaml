@@ -1,0 +1,17 @@
+# pnpm 11 reads package-manager settings from here (the `pnpm` field in package.json is no
+# longer honoured). We explicitly allow the dependency build scripts this app needs so
+# `pnpm install` doesn't leave them ignored — otherwise pnpm exits non-zero and trips
+# Angular's dependency-status preflight. esbuild powers the Angular build; sharp is used by
+# @capacitor/assets to generate launcher icons / splash screens.
+#
+# nodeLinker: hoisted gives a flat node_modules so Capacitor can discover each plugin's
+# native android/ and ios/ folders during `cap sync` (pnpm's default symlinked layout hides
+# them). pnpm 11 reads this here; the .npmrc node-linker entry is kept for older pnpm/tooling.
+nodeLinker: hoisted
+
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+  lmdb: true
+  msgpackr-extract: true
+  sharp: true
