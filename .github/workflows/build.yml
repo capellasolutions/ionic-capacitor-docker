@@ -36,7 +36,7 @@ jobs:
           # version (or a packageManager field, which we avoid so pnpm doesn't try to
           # self-switch versions during the Docker build).
           version: latest
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: pnpm
