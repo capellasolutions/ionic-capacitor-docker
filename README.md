@@ -104,7 +104,7 @@ That builds the toolchain image, builds the demo, and copies the artifact into `
 The bundled demo is a small **Angular 22 + Ionic v9 + Capacitor** app that runs **fully zoneless** (no `zone.js`). It exercises the Docker pipeline end-to-end and doubles as an up-to-date reference for the modern toolchain:
 
 - **Angular 22** with the esbuild `@angular/build:application` builder, standalone components and signals — zoneless by default (`provideZonelessChangeDetection()`), no `zone.js` in the bundle.
-- **Ionic** pinned to a **v9 pre-release dev build** of `@ionic/angular` (`8.8.12-dev…`). v9 adds Angular 21/22 support and zoneless-by-default. Until it ships as stable (~Q3 2026) the pin is exact. **When `@ionic/angular@9` is released, bump the pin to `^9` and delete this note.**
+- **Ionic v9** (`@ionic/angular@^9`, now stable) — Angular 21/22 support and zoneless by default. v9 promotes the standalone build to the package root, so components come from `@ionic/angular` instead of the old `@ionic/angular/standalone` subpath.
 - **Capacitor 8** (`@capacitor/core`, `@capacitor/android`, `@capacitor/ios`) with `@capacitor/cli` and `@capacitor/assets` as devDependencies, plus the `@capacitor/{status-bar,keyboard,device,splash-screen}` plugins. The About page reads `@capacitor/device` live, so you can see at a glance which flavour/platform you are running.
 - **pnpm** is the default package manager (the Cordova sibling defaults to npm — this is the "different way"). An `.npmrc` sets `node-linker=hoisted` so pnpm's `node_modules` is flat enough for Capacitor to discover each plugin's native `android/` and `ios/` folders during `cap sync`.
 - **TypeScript 6**, **Vitest** (jsdom) for unit tests, **angular-eslint** for linting.
