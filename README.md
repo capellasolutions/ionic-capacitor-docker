@@ -145,7 +145,8 @@ docker build . -f ./app-builder.Dockerfile \
 | `JAVA_VERSION` | `21` (LTS) | Capacitor 8's Android template uses AGP 8.x, which runs on JDK 21 with Gradle 8.x. JDK 25 would need AGP 9 / Gradle 9.1+. |
 | `ANDROID_PLATFORMS_VERSION` | `36` | Android platform (compile/target SDK) to install. |
 | `ANDROID_BUILD_TOOLS_VERSION` | `35.0.0` | The build-tools version Capacitor 8's Android Gradle Plugin pins — even though it compiles against platform 36. (build-tools and compile SDK are decoupled; AGP dictates build-tools.) |
-| `ANDROID_SDK_TOOLS_VERSION` | `14742923` | Android command-line tools build number. |
+| `ANDROID_EXTRA_PACKAGES` | `platforms;android-37.2 build-tools;37.0.0` | Extra `sdkmanager` packages, space separated. The default stages the **Android 37** toolchain (SDK Platform 37.2 + Build Tools 37.0.0) so the image already has it the day Capacitor can target API 37 — see the note below. Set to `""` to skip it, or use it for anything else (`ndk;…`, `cmake;…`, `emulator`). |
+| `ANDROID_SDK_TOOLS_VERSION` | `16111833` | Android command-line tools build number. |
 | `PACKAGE_MANAGER` | `npm` | `npm`, `yarn`, or `pnpm`. The demo's `build-mobile.sh` passes `pnpm`. Only the **selected** manager is installed (npm ships with Node; yarn/pnpm are added on demand with `npm install -g`). This avoids Corepack, which is being unbundled from Node 25+. Also selects how `Dockerfile` installs *your app's* dependencies — commit the matching lockfile. |
 | `NODE_VERSION` | `24` (LTS) | Node.js major (installed via NodeSource). |
 | `YARN_VERSION` | `stable` | Yarn version (installed only when `PACKAGE_MANAGER=yarn`). |
@@ -157,6 +158,9 @@ docker build . -f ./app-builder.Dockerfile \
 
 > [!TIP]
 > Check the [Capacitor Android docs](https://capacitorjs.com/docs/android) first, keep `@capacitor/android` in `package.json` current, and make sure the generated project's compile/target SDK matches `ANDROID_PLATFORMS_VERSION`.
+
+> [!NOTE]
+> **Android 37 is installed but not yet targeted.** Capacitor 8 compiles against a plain integer `compileSdkVersion` / `targetSdkVersion` of 36, and Google never published a plain `platforms;android-37` — only the minor releases 37.0 / 37.1 / 37.2. AGP reaches those through a separate `compileSdkMinor`, which Capacitor does not expose. So `ANDROID_PLATFORMS_VERSION` stays at `36` while `ANDROID_EXTRA_PACKAGES` puts Platform 37.2 and Build Tools 37.0.0 in the image ready to go. When Capacitor gains API 37 support, move `37.2` / `37.0.0` into the two pinned args.
 
 ### 2. Build your app
 
