@@ -104,7 +104,7 @@ That builds the toolchain image, builds the demo, and copies the artifact into `
 The bundled demo is a small **Angular 22 + Ionic v9 + Capacitor** app that runs **fully zoneless** (no `zone.js`). It exercises the Docker pipeline end-to-end and doubles as an up-to-date reference for the modern toolchain:
 
 - **Angular 22** with the esbuild `@angular/build:application` builder, standalone components and signals — zoneless by default (`provideZonelessChangeDetection()`), no `zone.js` in the bundle.
-- **Ionic** pinned to a **v9 pre-release dev build** of `@ionic/angular` (`8.8.12-dev…`). v9 adds Angular 21/22 support and zoneless-by-default. Until it ships as stable (~Q3 2026) the pin is exact. **When `@ionic/angular@9` is released, bump the pin to `^9` and delete this note.**
+- **Ionic v9** (`@ionic/angular@^9`, now stable) — Angular 21/22 support and zoneless by default. v9 promotes the standalone build to the package root, so components come from `@ionic/angular` instead of the old `@ionic/angular/standalone` subpath.
 - **Capacitor 8** (`@capacitor/core`, `@capacitor/android`, `@capacitor/ios`) with `@capacitor/cli` and `@capacitor/assets` as devDependencies, plus the `@capacitor/{status-bar,keyboard,device,splash-screen}` plugins. The About page reads `@capacitor/device` live, so you can see at a glance which flavour/platform you are running.
 - **pnpm** is the default package manager (the Cordova sibling defaults to npm — this is the "different way"). An `.npmrc` sets `node-linker=hoisted` so pnpm's `node_modules` is flat enough for Capacitor to discover each plugin's native `android/` and `ios/` folders during `cap sync`.
 - **TypeScript 6**, **Vitest** (jsdom) for unit tests, **angular-eslint** for linting.
@@ -145,7 +145,8 @@ docker build . -f ./app-builder.Dockerfile \
 | `JAVA_VERSION` | `21` (LTS) | Capacitor 8's Android template uses AGP 8.x, which runs on JDK 21 with Gradle 8.x. JDK 25 would need AGP 9 / Gradle 9.1+. |
 | `ANDROID_PLATFORMS_VERSION` | `36` | Android platform (compile/target SDK) to install. |
 | `ANDROID_BUILD_TOOLS_VERSION` | `35.0.0` | The build-tools version Capacitor 8's Android Gradle Plugin pins — even though it compiles against platform 36. (build-tools and compile SDK are decoupled; AGP dictates build-tools.) |
-| `ANDROID_SDK_TOOLS_VERSION` | `14742923` | Android command-line tools build number. |
+| `ANDROID_EXTRA_PACKAGES` | `platforms;android-37.2 build-tools;37.0.0` | Extra `sdkmanager` packages, space separated. The default stages the **Android 37** toolchain (SDK Platform 37.2 + Build Tools 37.0.0) so the image already has it the day Capacitor can target API 37 — see the note below. Set to `""` to skip it, or use it for anything else (`ndk;…`, `cmake;…`, `emulator`). |
+| `ANDROID_SDK_TOOLS_VERSION` | `16111833` | Android command-line tools build number. |
 | `PACKAGE_MANAGER` | `npm` | `npm`, `yarn`, or `pnpm`. The demo's `build-mobile.sh` passes `pnpm`. Only the **selected** manager is installed (npm ships with Node; yarn/pnpm are added on demand with `npm install -g`). This avoids Corepack, which is being unbundled from Node 25+. Also selects how `Dockerfile` installs *your app's* dependencies — commit the matching lockfile. |
 | `NODE_VERSION` | `24` (LTS) | Node.js major (installed via NodeSource). |
 | `YARN_VERSION` | `stable` | Yarn version (installed only when `PACKAGE_MANAGER=yarn`). |
@@ -157,6 +158,9 @@ docker build . -f ./app-builder.Dockerfile \
 
 > [!TIP]
 > Check the [Capacitor Android docs](https://capacitorjs.com/docs/android) first, keep `@capacitor/android` in `package.json` current, and make sure the generated project's compile/target SDK matches `ANDROID_PLATFORMS_VERSION`.
+
+> [!NOTE]
+> **Android 37 is installed but not yet targeted.** Capacitor 8 compiles against a plain integer `compileSdkVersion` / `targetSdkVersion` of 36, and Google never published a plain `platforms;android-37` — only the minor releases 37.0 / 37.1 / 37.2. AGP reaches those through a separate `compileSdkMinor`, which Capacitor does not expose. So `ANDROID_PLATFORMS_VERSION` stays at `36` while `ANDROID_EXTRA_PACKAGES` puts Platform 37.2 and Build Tools 37.0.0 in the image ready to go. When Capacitor gains API 37 support, move `37.2` / `37.0.0` into the two pinned args.
 
 ### 2. Build your app
 

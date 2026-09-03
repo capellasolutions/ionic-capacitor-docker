@@ -14,7 +14,7 @@ import {
   IonText,
   IonTitle,
   IonToolbar,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { Device } from '@capacitor/device';
 
 import { environment, firebaseConfig } from '../../environments/environment';
