@@ -21,18 +21,3 @@ allowBuilds:
   lmdb: true
   msgpackr-extract: true
   sharp: true
-
-# pnpm 11 refuses lockfile entries published within its minimumReleaseAge window (24h) — a supply-chain guard against
-# freshly-hijacked releases. The check runs on `pnpm install --frozen-lockfile` too, so it fires in CI and in the Docker
-# build, not just on a fresh resolution. These are the entries that were younger than the window when this lockfile was
-# written; pnpm records them here itself when it resolves them. They can be pruned whenever the lockfile is regenerated
-# with packages that have since aged out.
-minimumReleaseAgeExclude:
-  - '@angular-devkit/architect@0.2201.7'
-  - '@angular-devkit/core@22.1.7'
-  - '@angular-devkit/schematics@22.1.7'
-  - '@angular/build@22.1.7'
-  - '@angular/cli@22.1.7'
-  - '@ionic/angular@9.0.2'
-  - '@ionic/core@9.0.2'
-  - '@schematics/angular@22.1.7'
