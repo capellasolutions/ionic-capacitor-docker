@@ -73,8 +73,8 @@ importers:
         specifier: ^3.0.5
         version: 3.0.5(@types/node@26.1.2)(supports-color@5.5.0)(typescript@6.0.3)
       '@capacitor/cli':
-        specifier: ^8.5.1
-        version: 8.5.1(supports-color@5.5.0)
+        specifier: ^8.5.2
+        version: 8.5.2(supports-color@5.5.0)
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.9.1(supports-color@5.5.0))
@@ -409,8 +409,8 @@ packages:
     engines: {node: '>=16.0.0'}
     hasBin: true
 
-  '@capacitor/cli@8.5.1':
-    resolution: {integrity: sha512-LKQFSyLg1QbTN6CGDoFqeRtAlj8C3c9OymP8OuhwlmkbSQwh9i1HQjwUCaNyVem2XkY9rv0v2UOfVlgoxH5pAw==}
+  '@capacitor/cli@8.5.2':
+    resolution: {integrity: sha512-O2kpA5ZPJUAmliDCcmpMf8xnJwMezxlFPUrlyOAjbL3U9MFNY3l4ZpPI/UXwvyPmR8ETcVF9pFr+VdWq61rqTQ==}
     engines: {node: '>=22.0.0'}
     hasBin: true
 
@@ -4817,7 +4817,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@capacitor/cli@8.5.1(supports-color@5.5.0)':
+  '@capacitor/cli@8.5.2(supports-color@5.5.0)':
     dependencies:
       '@ionic/cli-framework-output': 2.2.8(supports-color@5.5.0)
       '@ionic/utils-subprocess': 3.0.1(supports-color@5.5.0)
