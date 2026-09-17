@@ -21,7 +21,7 @@
     "@angular/platform-browser": "^22.1.4",
     "@angular/router": "^22.1.4",
     "@capacitor/android": "^8.5.1",
-    "@capacitor/core": "^8.5.1",
+    "@capacitor/core": "^8.5.2",
     "@capacitor/device": "^8.0.3",
     "@capacitor/ios": "^8.5.1",
     "@capacitor/keyboard": "^8.0.5",
