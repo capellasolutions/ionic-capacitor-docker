@@ -36,8 +36,8 @@ importers:
         specifier: ^8.0.3
         version: 8.0.3(@capacitor/core@8.6.0)
       '@capacitor/ios':
-        specifier: ^8.5.3
-        version: 8.5.3(@capacitor/core@8.6.0)
+        specifier: ^8.6.0
+        version: 8.6.0(@capacitor/core@8.6.0)
       '@capacitor/keyboard':
         specifier: ^8.0.6
         version: 8.0.6(@capacitor/core@8.6.0)
@@ -459,10 +459,10 @@ packages:
     peerDependencies:
       '@capacitor/core': '>=8.0.0'
 
-  '@capacitor/ios@8.5.3':
-    resolution: {integrity: sha512-HnnV92Jl8+3x0JUloXUMjFcUsQI8wHFVsKwkLn72DfRZXYGZW11tQbmNOWOnRTljaU18FdI1b9ipT09SzzPDNw==}
+  '@capacitor/ios@8.6.0':
+    resolution: {integrity: sha512-Y2PE4zoBqMrSTWoVMJmX2byBznjn6egmATzoEUJiGVbVubkNpAvkF/tl0SBKDyP67ngyedTx1tQq5IGYIhby1A==}
     peerDependencies:
-      '@capacitor/core': ^8.5.0
+      '@capacitor/core': ^8.6.0
 
   '@capacitor/keyboard@8.0.6':
     resolution: {integrity: sha512-Bbe+9V0qaT6dzEFJEK7BUWR01l2+vZE8FM5ITF/WgKtx+G6eGZ6d5+YiSMRJBAK0VGjdO59v8yiQ10Doa5KyvQ==}
@@ -4781,7 +4781,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 8.6.0
 
-  '@capacitor/ios@8.5.3(@capacitor/core@8.6.0)':
+  '@capacitor/ios@8.6.0(@capacitor/core@8.6.0)':
     dependencies:
       '@capacitor/core': 8.6.0
 
