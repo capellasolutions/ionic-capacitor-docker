@@ -7,6 +7,38 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
+    # pnpm 11 rejects lockfile entries published within the last 24h (ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION), and it
+    # checks on `pnpm install --frozen-lockfile` too, so a PR for a release that is still inside that window fails CI.
+    cooldown:
+      default-days: 2
+    groups:
+      # The framework packages peer-depend on each other at the exact same version (@angular/router@22.2.5 wants
+      # @angular/core@22.2.5). pnpm only warns on that mismatch, so single-package bumps pass CI and leave the versions
+      # out of step. Keep them in one PR, as ionic-cordova-docker does.
+      angular:
+        patterns:
+          - '@angular/*'
+          - '@angular-eslint/*'
+          - 'angular-eslint'
+      # @capacitor/core, cli, android and ios are meant to be on the same version; the official plugins move with them.
+      capacitor:
+        patterns:
+          - '@capacitor/*'
+        exclude-patterns:
+          # A standalone asset-generation tool on its own release cycle.
+          - '@capacitor/assets'
+    ignore:
+      # Angular majors go through `ng update`, and Capacitor majors through `npx cap migrate`; both run migrations a
+      # Dependabot major bump would skip, leaving a broken partial upgrade. This also hides @capacitor/assets majors, so
+      # check those by hand.
+      - dependency-name: '@angular/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@angular-eslint/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'angular-eslint'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@capacitor/*'
+        update-types: ['version-update:semver-major']
 
   # Base image (ubuntu) referenced by the canonical Docker files.
   - package-ecosystem: docker
